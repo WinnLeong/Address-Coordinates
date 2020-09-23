@@ -1,0 +1,51 @@
+name: address_coordinates
+description: Easily convert address to coordinates and vice versa.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^0.1.3
+  geocoding: ^1.0.3+1
+  auto_route: ^0.6.7
+  flutter_screenutil: ^3.0.2
+  flutter_spinkit: ^4.1.2+1
+  flushbar: ^1.10.4
+  map_launcher: ^0.12.2
+  flutter_svg: ^0.18.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_name: ^0.0.1
+  flutter_launcher_icons: ^0.8.0
+  auto_route_generator: ^0.6.8
+  build_runner:
+
+flutter_launcher_name:
+  name: 'Address & Coordinates'
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path_android: 'assets/icon/android-icon.png'
+  image_path_ios: 'assets/icon/ios-icon.png'
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  fonts:
+    - family: Myriad
+      fonts:
+        - asset: assets/fonts/MYRIADPRO-REGULAR.otf
+        - asset: assets/fonts/MYRIADPRO-BOLD.otf
+          weight: 700
