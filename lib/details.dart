@@ -1,7 +1,9 @@
+import 'package:address_coordinates/utils/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/services.dart';
 
 class Details extends StatelessWidget {
   final List<Location> coordinates;
@@ -9,7 +11,9 @@ class Details extends StatelessWidget {
 
   Details(this.coordinates, this.address);
 
-  renderAddress() {
+  final customSnackBar = CustomSnackbar();
+
+  renderAddress(context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -26,7 +30,18 @@ class Details extends StatelessWidget {
                   '${address[0].street}, ${address[0].postalCode} ${address[0].locality}, ${address[0].administrativeArea}, ${address[0].country}'),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                Clipboard.setData(
+                  ClipboardData(
+                      text:
+                          '${address[0].street}, ${address[0].postalCode} ${address[0].locality}, ${address[0].administrativeArea}, ${address[0].country}'),
+                );
+
+                customSnackBar.show(context,
+                    message: 'Address copied to clipboard.',
+                    duration: 1000,
+                    type: MessageType.INFO);
+              },
               child: Icon(Icons.content_copy),
             ),
           ],
@@ -35,7 +50,7 @@ class Details extends StatelessWidget {
     );
   }
 
-  renderCoordinates() {
+  renderCoordinates(context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -52,7 +67,18 @@ class Details extends StatelessWidget {
                   '${coordinates[0].latitude}, ${coordinates[0].longitude}'),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                Clipboard.setData(
+                  ClipboardData(
+                      text:
+                          '${coordinates[0].latitude}, ${coordinates[0].longitude}'),
+                );
+
+                customSnackBar.show(context,
+                    message: 'Coordinates copied to clipboard.',
+                    duration: 1000,
+                    type: MessageType.INFO);
+              },
               child: Icon(Icons.content_copy),
             ),
           ],
@@ -115,9 +141,9 @@ class Details extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (address.length > 0) renderAddress(),
-            SizedBox(height: 15.h),
-            if (coordinates.length > 0) renderCoordinates(),
+            if (address.length > 0) renderAddress(context),
+            SizedBox(height: 20.h),
+            if (coordinates.length > 0) renderCoordinates(context),
             SizedBox(height: 20.h),
             Center(
               child: RawMaterialButton(

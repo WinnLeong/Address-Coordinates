@@ -91,7 +91,7 @@ class _HomeState extends State<Home> {
                             fontSize: 40.sp, fontWeight: FontWeight.bold),
                       ),
                       CustomTextFormField(
-                        labelText: 'Address',
+                        hintText: 'Address',
                         controller: addressController,
                         validator: (value) {
                           if (value.isEmpty &&
@@ -109,7 +109,7 @@ class _HomeState extends State<Home> {
                             fontSize: 40.sp, fontWeight: FontWeight.bold),
                       ),
                       CustomTextFormField(
-                        labelText: 'Latitude',
+                        hintText: 'Latitude',
                         controller: latitudeController,
                         validator: (value) {
                           if (value.isEmpty &&
@@ -120,7 +120,7 @@ class _HomeState extends State<Home> {
                         },
                       ),
                       CustomTextFormField(
-                        labelText: 'Longitude',
+                        hintText: 'Longitude',
                         controller: longitudeController,
                         validator: (value) {
                           if (value.isEmpty &&

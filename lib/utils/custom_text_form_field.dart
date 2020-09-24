@@ -14,6 +14,7 @@ class CustomTextFormField extends StatelessWidget {
   final textInputAction;
   final onFieldSubmitted;
   final String labelText;
+  final String hintText;
   final validator;
   final double cursorWidth;
   final TextCapitalization textCapitalization;
@@ -29,6 +30,7 @@ class CustomTextFormField extends StatelessWidget {
     this.textInputAction,
     this.onFieldSubmitted,
     this.labelText,
+    this.hintText,
     this.validator,
     this.cursorWidth,
     this.textCapitalization,
@@ -52,12 +54,13 @@ class CustomTextFormField extends StatelessWidget {
       decoration: InputDecoration(
         contentPadding: EdgeInsets.only(left: 5.w),
         hintStyle: TextStyle(
-          color: primaryColor,
+          color: Color(0xff2f3033),
         ),
         labelStyle: TextStyle(
           color: Color(0xff2f3033),
         ),
         labelText: labelText,
+        hintText: hintText,
         // fillColor: Colors.grey.withOpacity(.25),
         // filled: true,
         /* enabledBorder: OutlineInputBorder(

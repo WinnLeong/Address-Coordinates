@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/painting.dart';
 
 class ColorConstant {
-  static final primaryColor = Color(0xffedf2fa);
+  static final primaryColor = Color(0xffd9e6fa);
   static const green = Colors.green;
   static const red = Colors.red;
   static const amberAccent = Colors.amberAccent;
