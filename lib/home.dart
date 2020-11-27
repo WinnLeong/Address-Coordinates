@@ -1,9 +1,12 @@
 import 'package:address_coordinates/utils/custom_button.dart';
 import 'package:address_coordinates/utils/custom_text_form_field.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:geocoding/geocoding.dart' as geocoding;
+import 'package:google_maps_webservice/places.dart';
 
 import 'router.gr.dart';
 import 'utils/loading_model.dart';
@@ -20,6 +23,14 @@ class _HomeState extends State<Home> {
   final longitudeController = TextEditingController();
 
   bool _isVisible = false;
+
+  static const kGoogleApiKey = 'AIzaSyDmqPORhCFty3J-ip1yCCqPdCzochLl3Fk';
+  final homeScaffoldKey = GlobalKey<ScaffoldState>();
+  Mode _mode = Mode.overlay;
+  // to get places detail (lat/lng)
+  GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
+
+  String _countryCode = 'my';
 
   @override
   void dispose() {
@@ -38,14 +49,15 @@ class _HomeState extends State<Home> {
         _isVisible = true;
       });
 
-      List<Location> getCoordinates = [];
-      List<Placemark> getAddress = [];
+      List<geocoding.Location> getCoordinates = [];
+      List<geocoding.Placemark> getAddress = [];
 
-      getCoordinates = await locationFromAddress(addressController.text);
+      getCoordinates =
+          await geocoding.locationFromAddress(addressController.text);
 
       if (latitudeController.text.isNotEmpty &&
           longitudeController.text.isNotEmpty)
-        getAddress = await placemarkFromCoordinates(
+        getAddress = await geocoding.placemarkFromCoordinates(
           double.tryParse(latitudeController.text),
           double.tryParse(longitudeController.text),
         );
@@ -62,6 +74,60 @@ class _HomeState extends State<Home> {
         ),
       );
     }
+  }
+
+  Future<void> toggleSearchBar() async {
+    setState(() {
+      addressController.clear();
+      latitudeController.clear();
+      longitudeController.clear();
+    });
+    // show input autocomplete with selected mode
+    // then get the Prediction selected
+    Prediction p = await PlacesAutocomplete.show(
+      context: context,
+      apiKey: kGoogleApiKey,
+      onError: onError,
+      mode: _mode,
+      language: "en",
+      components: [Component(Component.country, _countryCode)],
+    );
+
+    PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
+
+    setState(() {
+      addressController.text = p.description;
+      latitudeController.text = detail.result.geometry.location.lat.toString();
+      longitudeController.text = detail.result.geometry.location.lng.toString();
+    });
+    // displayPrediction(p, homeScaffoldKey.currentState);
+  }
+
+  void onError(PlacesAutocompleteResponse response) {
+    homeScaffoldKey.currentState.showSnackBar(
+      SnackBar(content: Text(response.errorMessage)),
+    );
+  }
+
+  getCountryCode() {
+    return CountryCodePicker(
+      onChanged: (value) {
+        setState(() {
+          _countryCode = value.code;
+        });
+      },
+      initialSelection: 'MY',
+      favorite: ['+60', 'MY'],
+      showCountryOnly: true,
+      showFlagMain: true,
+      hideMainText: true,
+      alignLeft: false,
+      enabled: true,
+      textStyle: TextStyle(
+        fontSize: 58.sp,
+        color: Color(0xff808080),
+      ),
+    );
   }
 
   @override
@@ -81,6 +147,7 @@ class _HomeState extends State<Home> {
         }
       },
       child: Scaffold(
+        key: homeScaffoldKey,
         body: SafeArea(
           child: Stack(
             children: [
@@ -91,29 +158,53 @@ class _HomeState extends State<Home> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      Row(
+                        children: [
+                          Text(
+                            'Address',
+                            style: TextStyle(
+                                fontSize: 40.sp, fontWeight: FontWeight.bold),
+                          ),
+                          getCountryCode(),
+                        ],
+                      ),
+                      /* Text(
                         'Address',
                         style: TextStyle(
                             fontSize: 40.sp, fontWeight: FontWeight.bold),
+                      ), */
+                      InkWell(
+                        onTap: toggleSearchBar,
+                        child: TextFormField(
+                          enabled: false,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(left: 5.w),
+                            hintStyle: TextStyle(
+                              color: Color(0xff2f3033),
+                            ),
+                            hintText: 'Address',
+                            disabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.lightBlue, width: 1.0)),
+                          ),
+                          controller: addressController,
+                          validator: (value) {
+                            if (value.isEmpty &&
+                                latitudeController.text.isEmpty &&
+                                longitudeController.text.isEmpty) {
+                              return 'Enter address or coordinates.';
+                            }
+                            return null;
+                          },
+                        ),
                       ),
-                      CustomTextFormField(
-                        hintText: 'Address',
-                        controller: addressController,
-                        validator: (value) {
-                          if (value.isEmpty &&
-                              latitudeController.text.isEmpty &&
-                              longitudeController.text.isEmpty) {
-                            return 'Enter address or coordinates.';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 15.h),
+                      SizedBox(height: 20.h),
                       Text(
                         'Coordinates',
                         style: TextStyle(
                             fontSize: 40.sp, fontWeight: FontWeight.bold),
                       ),
+                      SizedBox(height: 10.h),
                       CustomTextFormField(
                         hintText: 'Latitude',
                         controller: latitudeController,

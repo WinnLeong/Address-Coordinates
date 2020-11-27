@@ -3,7 +3,7 @@ description: Easily convert address to coordinates and vice versa.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+1
+version: 0.0.1+1
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -11,13 +11,21 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  ## Widgets
   cupertino_icons: ^1.0.0
+  flutter_google_places: ^0.2.6
+  country_code_picker: ^1.6.2
+
+  ## Tools
+  # google_maps_flutter: ^1.0.6
+  google_maps_webservice: ^0.0.18
+  map_launcher: ^1.0.0
   geocoding: ^1.0.5
   auto_route: ^0.6.9
   flutter_screenutil: ^3.2.0
   flutter_spinkit: ^4.1.2+1
-  flushbar: ^1.10.4
-  map_launcher: ^1.0.0
+  flushbar: ^1.10.4  
   flutter_svg: 0.19.1
 
 dev_dependencies:

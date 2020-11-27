@@ -1,18 +1,35 @@
+// import 'dart:async';
+
 import 'package:address_coordinates/utils/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:map_launcher/map_launcher.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:map_launcher/map_launcher.dart' as mapLauncher;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class Details extends StatelessWidget {
+class Details extends StatefulWidget {
   final List<Location> coordinates;
   final List<Placemark> address;
 
   Details(this.coordinates, this.address);
 
+  @override
+  _DetailsState createState() => _DetailsState();
+}
+
+class _DetailsState extends State<Details> {
   final customSnackBar = CustomSnackbar();
+  /* final Completer<GoogleMapController> mapController = Completer();
+  Set<Marker> markers = {};
+  CameraPosition cameraPosition = CameraPosition(
+    target: LatLng(
+      3.154430,
+      101.715103,
+    ),
+    zoom: 20,
+  ); */
 
   renderAddress(context) {
     return Column(
@@ -28,14 +45,14 @@ class Details extends StatelessWidget {
             Container(
               width: 600.w,
               child: SelectableText(
-                  '${address[0].street}, ${address[0].postalCode} ${address[0].locality}, ${address[0].administrativeArea}, ${address[0].country}'),
+                  '${widget.address[0].street}, ${widget.address[0].postalCode} ${widget.address[0].locality}, ${widget.address[0].administrativeArea}, ${widget.address[0].country}'),
             ),
             InkWell(
               onTap: () {
                 Clipboard.setData(
                   ClipboardData(
                       text:
-                          '${address[0].street}, ${address[0].postalCode} ${address[0].locality}, ${address[0].administrativeArea}, ${address[0].country}'),
+                          '${widget.address[0].street}, ${widget.address[0].postalCode} ${widget.address[0].locality}, ${widget.address[0].administrativeArea}, ${widget.address[0].country}'),
                 );
 
                 customSnackBar.show(context,
@@ -65,14 +82,14 @@ class Details extends StatelessWidget {
             Container(
               width: 600.w,
               child: SelectableText(
-                  '${coordinates[0].latitude}, ${coordinates[0].longitude}'),
+                  '${widget.coordinates[0].latitude}, ${widget.coordinates[0].longitude}'),
             ),
             InkWell(
               onTap: () {
                 Clipboard.setData(
                   ClipboardData(
                       text:
-                          '${coordinates[0].latitude}, ${coordinates[0].longitude}'),
+                          '${widget.coordinates[0].latitude}, ${widget.coordinates[0].longitude}'),
                 );
 
                 customSnackBar.show(context,
@@ -92,8 +109,9 @@ class Details extends StatelessWidget {
     try {
       final title = 'Venue';
       final description = "";
-      final coords = Coords(coordinates[0].latitude, coordinates[0].longitude);
-      final availableMaps = await MapLauncher.installedMaps;
+      final coords = mapLauncher.Coords(
+          widget.coordinates[0].latitude, widget.coordinates[0].longitude);
+      final availableMaps = await mapLauncher.MapLauncher.installedMaps;
 
       showModalBottomSheet(
         context: context,
@@ -135,16 +153,16 @@ class Details extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Information'),
+        title: Text('Geocode'),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (address.length > 0) renderAddress(context),
+            if (widget.address.length > 0) renderAddress(context),
             SizedBox(height: 20.h),
-            if (coordinates.length > 0) renderCoordinates(context),
+            if (widget.coordinates.length > 0) renderCoordinates(context),
             SizedBox(height: 20.h),
             Center(
               child: RawMaterialButton(
@@ -165,3 +183,14 @@ class Details extends StatelessWidget {
     );
   }
 }
+
+/* 
+GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: cameraPosition,
+            markers: markers,
+            onMapCreated: (GoogleMapController controller) {
+              mapController.complete(controller);
+            },
+          ),
+           */
