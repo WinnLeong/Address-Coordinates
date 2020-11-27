@@ -1,3 +1,3 @@
 # address_coordinates
 
-A simple app to grab reverse geocoded results.
+A simple app for geocoding and reverse-geocoding.
