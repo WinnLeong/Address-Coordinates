@@ -8,6 +8,7 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 
 import 'details.dart';
 import 'home.dart';
@@ -56,7 +57,7 @@ class Router extends RouterBase {
 
 /// Details arguments holder class
 class DetailsArguments {
-  final dynamic coordinates;
-  final dynamic address;
+  final List<Location> coordinates;
+  final List<Placemark> address;
   DetailsArguments({@required this.coordinates, @required this.address});
 }

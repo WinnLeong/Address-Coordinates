@@ -4,6 +4,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Details extends StatelessWidget {
   final List<Location> coordinates;
@@ -112,10 +113,10 @@ class Details extends StatelessWidget {
                           );
                         },
                         title: Text(map.mapName),
-                        leading: Image(
-                          image: map.icon,
-                          height: 30.0,
-                          width: 30.0,
+                        leading: SvgPicture.asset(
+                          map.icon,
+                          height: 30,
+                          width: 30,
                         ),
                       ),
                   ],

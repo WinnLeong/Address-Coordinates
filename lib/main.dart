@@ -1,13 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'router.gr.dart';
+import 'router.gr.dart' as router;
 import 'utils/constants.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  ScreenUtil.init(designSize: Size(750, 1334), allowFontScaling: true);
   runApp(MyApp());
 }
 
@@ -24,9 +22,9 @@ class MyApp extends StatelessWidget {
         accentTextTheme: FontTheme().primaryFont,
         // visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      builder: ExtendedNavigator<Router>(
-        initialRoute: Routes.home,
-        router: Router(),
+      builder: ExtendedNavigator<router.Router>(
+        initialRoute: router.Routes.home,
+        router: router.Router(),
       ),
     );
   }

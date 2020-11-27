@@ -66,6 +66,12 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(
+      context,
+      designSize: Size(750, 1334),
+      allowFontScaling: true,
+    );
+
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -79,7 +85,7 @@ class _HomeState extends State<Home> {
           child: Stack(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 40.w),
+                padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 30.h),
                 child: Form(
                   key: _formKey,
                   child: Column(
