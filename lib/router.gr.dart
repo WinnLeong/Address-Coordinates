@@ -58,6 +58,6 @@ class Router extends RouterBase {
 /// Details arguments holder class
 class DetailsArguments {
   final List<Location> coordinates;
-  final List<Placemark> address;
+  final dynamic address;
   DetailsArguments({@required this.coordinates, @required this.address});
 }

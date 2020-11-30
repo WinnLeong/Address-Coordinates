@@ -11,7 +11,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class Details extends StatefulWidget {
   final List<Location> coordinates;
-  final List<Placemark> address;
+  final address;
 
   Details(this.coordinates, this.address);
 
@@ -39,30 +39,58 @@ class _DetailsState extends State<Details> {
           'Address',
           style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.bold),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              width: 600.w,
-              child: SelectableText(
-                  '${widget.address[0].street}, ${widget.address[0].postalCode} ${widget.address[0].locality}, ${widget.address[0].administrativeArea}, ${widget.address[0].country}'),
-            ),
-            InkWell(
-              onTap: () {
-                Clipboard.setData(
-                  ClipboardData(
-                      text:
-                          '${widget.address[0].street}, ${widget.address[0].postalCode} ${widget.address[0].locality}, ${widget.address[0].administrativeArea}, ${widget.address[0].country}'),
-                );
+        returnAddress(),
+      ],
+    );
+  }
 
-                customSnackBar.show(context,
-                    message: 'Address copied to clipboard.',
-                    duration: 1000,
-                    type: MessageType.INFO);
-              },
-              child: Icon(Icons.content_copy),
-            ),
-          ],
+  returnAddress() {
+    if (widget.address is String) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            width: 600.w,
+            child: SelectableText('${widget.address}'),
+          ),
+          InkWell(
+            onTap: () {
+              Clipboard.setData(
+                ClipboardData(text: '${widget.address}'),
+              );
+
+              customSnackBar.show(context,
+                  message: 'Address copied to clipboard.',
+                  duration: 1000,
+                  type: MessageType.INFO);
+            },
+            child: Icon(Icons.content_copy),
+          ),
+        ],
+      );
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          width: 600.w,
+          child: SelectableText(
+              '${widget.address[0].street}, ${widget.address[0].postalCode} ${widget.address[0].locality}, ${widget.address[0].administrativeArea}, ${widget.address[0].country}'),
+        ),
+        InkWell(
+          onTap: () {
+            Clipboard.setData(
+              ClipboardData(
+                  text:
+                      '${widget.address[0].street}, ${widget.address[0].postalCode} ${widget.address[0].locality}, ${widget.address[0].administrativeArea}, ${widget.address[0].country}'),
+            );
+
+            customSnackBar.show(context,
+                message: 'Address copied to clipboard.',
+                duration: 1000,
+                type: MessageType.INFO);
+          },
+          child: Icon(Icons.content_copy),
         ),
       ],
     );

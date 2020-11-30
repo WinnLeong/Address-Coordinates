@@ -3,6 +3,7 @@ import 'package:address_coordinates/utils/custom_text_form_field.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart' as geocoding;
@@ -24,7 +25,7 @@ class _HomeState extends State<Home> {
 
   bool _isVisible = false;
 
-  static const kGoogleApiKey = 'AIzaSyDmqPORhCFty3J-ip1yCCqPdCzochLl3Fk';
+  static final kGoogleApiKey = DotEnv().env['API_KEY'];
   final homeScaffoldKey = GlobalKey<ScaffoldState>();
   Mode _mode = Mode.overlay;
   // to get places detail (lat/lng)
@@ -70,7 +71,7 @@ class _HomeState extends State<Home> {
         Routes.details,
         arguments: DetailsArguments(
           coordinates: getCoordinates,
-          address: getAddress,
+          address: getAddress.length == 0 ? addressController.text : getAddress,
         ),
       );
     }
@@ -93,13 +94,18 @@ class _HomeState extends State<Home> {
       components: [Component(Component.country, _countryCode)],
     );
 
-    PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
+    if (p != null) {
+      PlacesDetailsResponse detail =
+          await _places.getDetailsByPlaceId(p.placeId);
 
-    setState(() {
-      addressController.text = p.description;
-      latitudeController.text = detail.result.geometry.location.lat.toString();
-      longitudeController.text = detail.result.geometry.location.lng.toString();
-    });
+      setState(() {
+        addressController.text = p.description;
+        latitudeController.text =
+            detail.result.geometry.location.lat.toString();
+        longitudeController.text =
+            detail.result.geometry.location.lng.toString();
+      });
+    }
     // displayPrediction(p, homeScaffoldKey.currentState);
   }
 
@@ -188,14 +194,14 @@ class _HomeState extends State<Home> {
                                     color: Colors.lightBlue, width: 1.0)),
                           ),
                           controller: addressController,
-                          validator: (value) {
+                          /* validator: (value) {
                             if (value.isEmpty &&
                                 latitudeController.text.isEmpty &&
                                 longitudeController.text.isEmpty) {
                               return 'Enter address or coordinates.';
                             }
                             return null;
-                          },
+                          }, */
                         ),
                       ),
                       SizedBox(height: 20.h),
@@ -209,9 +215,8 @@ class _HomeState extends State<Home> {
                         hintText: 'Latitude',
                         controller: latitudeController,
                         validator: (value) {
-                          if (value.isEmpty &&
-                              longitudeController.text.isNotEmpty) {
-                            return 'Both latitude and longitude is required.';
+                          if (value.isEmpty && addressController.text.isEmpty) {
+                            return 'Latitude is required.';
                           }
                           return null;
                         },
@@ -220,9 +225,8 @@ class _HomeState extends State<Home> {
                         hintText: 'Longitude',
                         controller: longitudeController,
                         validator: (value) {
-                          if (value.isEmpty &&
-                              latitudeController.text.isNotEmpty) {
-                            return 'Both latitude and longitude is required.';
+                          if (value.isEmpty && addressController.text.isEmpty) {
+                            return 'Longitude is required.';
                           }
                           return null;
                         },
